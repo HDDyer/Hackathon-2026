@@ -1,0 +1,6 @@
+name: backend
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+
