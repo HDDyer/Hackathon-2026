@@ -54,14 +54,45 @@ const questions = [
     max: 100,
     step: 1,
     defaultValue: 0
-  },
-  {
-    id: "favoriteColor",
-    prompt: "Favorite Color (hex code, e.g. 0x09251b)",
-    type: "text",
-    placeholder: "Leave blank for any"
   }
 ]
+
+const normalizeHero = (raw) => (
+
+  {
+  name:          raw.Name,
+  power:         raw.Power,
+  strength:      raw.Strength,
+  magic:         raw.Magic,
+  intelligence:  raw.Intelligence,
+  speed:         raw.Speed,
+  defense:       raw.Defense,
+  poison:        raw.Poison,
+  rage:          raw.Rage,
+  corrupted:     raw.Corrupted,
+  evilness:      raw.Evilness,
+  age:           raw.Age,
+  personality:   raw.Personality.trim(),
+  hometown:      raw.Hometown.trim(),
+  favoriteColor: raw.Favorite_Color.trim(),
+  weakness:      raw.Weakness.trim(),
+  height:        raw.Height.trim(),
+  weight:        raw.Weight,
+  isVillain:     raw.isVillain  === "True",
+  isLiving:      raw.isLiving   === "True",
+  isEmployed:    raw.isEmployed === "True",
+  isHuman:       raw.isHuman    === "True",
+})
+
+const matchHero = (hero, userQuery) => {
+  if (userQuery.wantsVillain !== null && hero.isVillain !== userQuery.wantsVillain) return false
+  if (userQuery.wantsHuman   !== null && hero.isHuman   !== userQuery.wantsHuman)   return false
+  if (hero.power        < userQuery.minPower)       return false
+  if (hero.intelligence < userQuery.minIntelligence) return false
+  if (hero.speed        < userQuery.minSpeed)        return false
+  if (userQuery.personality && hero.personality !== userQuery.personality) return false
+  return true
+}
 
 const IndexPage = () => {
   const [heroes, setHeroes] = useState([])
@@ -78,10 +109,12 @@ const IndexPage = () => {
           header: true,
           dynamicTyping: true,
           skipEmptyLines: true,
+          transformHeader: (header) => header.trim(),  
           complete: (result) => {
-            const data = result.data
+            const data = result.data.map(normalizeHero)  // normalize on load\
+
             setHeroes(data)
-            const personalities = [...new Set(data.map(h => h.Personality).filter(p => p))]
+            const personalities = [...new Set(data.map(h => h.personality).filter(Boolean))]
             setPersonalityOptions(personalities.sort())
           }
         })
@@ -90,46 +123,36 @@ const IndexPage = () => {
   }, [])
 
   const handleAnswerChange = (questionId, value) => {
-    setAnswers(prev => ({
-      ...prev,
-      [questionId]: value
-    }))
+    setAnswers(prev => ({ ...prev, [questionId]: value }))
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    let filtered = [...heroes]
-    if (answers.isVillain !== undefined) {
-      filtered = filtered.filter(h => h.isVillain === answers.isVillain)
+
+    const userQuery = {
+      wantsVillain:    answers.isVillain        ?? null,
+      wantsHuman:      answers.isHuman          ?? null,
+      minPower:        answers.minPower         ?? 0,
+      minIntelligence: answers.minIntelligence  ?? 0,
+      minSpeed:        answers.minSpeed         ?? 0,
+      personality:     answers.personality      || null,
     }
-    if (answers.isHuman !== undefined) {
-      filtered = filtered.filter(h => h.isHuman === answers.isHuman)
-    }
-    if (answers.minPower !== undefined && answers.minPower !== "") {
-      filtered = filtered.filter(h => h.Power >= Number(answers.minPower))
-    }
-    if (answers.minIntelligence !== undefined && answers.minIntelligence !== "") {
-      filtered = filtered.filter(h => h.Intelligence >= Number(answers.minIntelligence))
-    }
-    if (answers.personality && answers.personality !== "") {
-      filtered = filtered.filter(h => h.Personality === answers.personality)
-    }
-    if (answers.minSpeed !== undefined && answers.minSpeed !== "") {
-      filtered = filtered.filter(h => h.Speed >= Number(answers.minSpeed))
-    }
-    if (answers.favoriteColor && answers.favoriteColor !== "") {
-      filtered = filtered.filter(h => h.Favorite_Color === answers.favoriteColor)
-    }
+
+    console.log("User query:", JSON.stringify(userQuery, null, 2))
+
+    const filtered = heroes.filter(h => matchHero(h, userQuery))
+
+    console.log("Matched heroes:", filtered)
     setFilteredHeroes(filtered)
     setSubmitted(true)
   }
 
   const perfectHero = filteredHeroes.length > 0
-    ? filteredHeroes.reduce((best, current) => current.Power > best.Power ? current : best)
+    ? filteredHeroes.reduce((best, cur) => cur.power > best.power ? cur : best)
     : null
 
   const leastPerfectHero = filteredHeroes.length > 0
-    ? filteredHeroes.reduce((worst, current) => current.Power < worst.Power ? current : worst)
+    ? filteredHeroes.reduce((worst, cur) => cur.power < worst.power ? cur : worst)
     : null
 
   return (
@@ -187,6 +210,7 @@ const IndexPage = () => {
         ))}
         <button type="submit">Find My Hero</button>
       </form>
+
       {submitted && (
         <div className="results">
           <h2>Results</h2>
@@ -196,19 +220,19 @@ const IndexPage = () => {
             <>
               <div className="hero-card">
                 <h3>🌟 Perfect Hero (Highest Power)</h3>
-                <p><strong>Name:</strong> {perfectHero.Name}</p>
-                <p><strong>Power:</strong> {perfectHero.Power}</p>
-                <p><strong>Personality:</strong> {perfectHero.Personality}</p>
-                <p><strong>Hometown:</strong> {perfectHero.Hometown}</p>
-                <p><strong>Weakness:</strong> {perfectHero.Weakness}</p>
+                <p><strong>Name:</strong>        {perfectHero.name}</p>
+                <p><strong>Power:</strong>       {perfectHero.power}</p>
+                <p><strong>Personality:</strong> {perfectHero.personality}</p>
+                <p><strong>Hometown:</strong>    {perfectHero.hometown}</p>
+                <p><strong>Weakness:</strong>    {perfectHero.weakness}</p>
               </div>
               <div className="hero-card">
                 <h3>⚠️ Least Perfect Hero (Lowest Power)</h3>
-                <p><strong>Name:</strong> {leastPerfectHero.Name}</p>
-                <p><strong>Power:</strong> {leastPerfectHero.Power}</p>
-                <p><strong>Personality:</strong> {leastPerfectHero.Personality}</p>
-                <p><strong>Hometown:</strong> {leastPerfectHero.Hometown}</p>
-                <p><strong>Weakness:</strong> {leastPerfectHero.Weakness}</p>
+                <p><strong>Name:</strong>        {leastPerfectHero.name}</p>
+                <p><strong>Power:</strong>       {leastPerfectHero.power}</p>
+                <p><strong>Personality:</strong> {leastPerfectHero.personality}</p>
+                <p><strong>Hometown:</strong>    {leastPerfectHero.hometown}</p>
+                <p><strong>Weakness:</strong>    {leastPerfectHero.weakness}</p>
               </div>
               <details>
                 <summary>Show all matching heroes ({filteredHeroes.length})</summary>
@@ -225,11 +249,11 @@ const IndexPage = () => {
                   <tbody>
                     {filteredHeroes.map((hero, i) => (
                       <tr key={i}>
-                        <td>{hero.Name}</td>
-                        <td>{hero.Power}</td>
-                        <td>{hero.Intelligence}</td>
-                        <td>{hero.Speed}</td>
-                        <td>{hero.Personality}</td>
+                        <td>{hero.name}</td>
+                        <td>{hero.power}</td>
+                        <td>{hero.intelligence}</td>
+                        <td>{hero.speed}</td>
+                        <td>{hero.personality}</td>
                       </tr>
                     ))}
                   </tbody>
