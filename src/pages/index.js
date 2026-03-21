@@ -3,6 +3,26 @@ import { useState, useEffect } from "react"
 import Papa from "papaparse"
 import "./index.css"
 
+const USER_PREFERENCES = {
+  stat_preferences: {
+    Speed:        0,  // 0-10
+    Intelligence:  0,  
+    Defense:       0,  
+    Magic:         0,  
+    Strength:      0,  
+  },
+  bool_preferences: {
+    isVillain: true,   
+    isLiving:  false, 
+    isHuman:   false,
+  },
+  penalties: {
+    Evilness:  0,  // Penalise high evilness heavily
+    Corrupted: 0,  // Some corruption is okay but not a lot
+  },
+  randomness: 0.05,  // Small shuffle so close scores vary a bit
+};
+
 const questions = [
   {
     id: "isVillain",
@@ -58,7 +78,6 @@ const questions = [
 ]
 
 const normalizeHero = (raw) => (
-
   {
   name:          raw.Name,
   power:         raw.Power,
@@ -112,7 +131,6 @@ const IndexPage = () => {
           transformHeader: (header) => header.trim(),  
           complete: (result) => {
             const data = result.data.map(normalizeHero)  // normalize on load\
-
             setHeroes(data)
             const personalities = [...new Set(data.map(h => h.personality).filter(Boolean))]
             setPersonalityOptions(personalities.sort())
