@@ -1,0 +1,19 @@
+# Hackathon 2026
+
+## How to run the project
+
+1. Clone the repository:
+
+   ```bash
+    git clone https://github.com/HDDyer/Hackathon-2026
+    cd Hackathon-2026
+    ```
+2. Ensure that you have Anaconda installed on your system. If not, you can download it from [here](https://www.anaconda.com/products/distribution) (you do not need a account to download Anaconda, find the small link "Skip Registration" on the download page).
+
+3. Set up the backend environment:
+    ```bash
+     cd backend
+     conda env create -f environment.yml
+     conda activate backend
+     python app.py
+     ```
