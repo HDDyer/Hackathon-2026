@@ -108,8 +108,6 @@ const IndexPage = () => {
     setSubmitted(false)
   }
 
-  // ===== NEW FEATURES =====
-
   const getTopHeroes = () => filteredHeroes.slice(0, 3)
 
   const getPersonalityType = () => {
@@ -144,7 +142,7 @@ const IndexPage = () => {
         <Navbar />
 
         <section className="hero-section">
-          <h1 className="heading">🦸 Superhero Matchmaker</h1>
+          <h1 className="heading">🦸 SuperSearcher</h1>
           <p className="subheading">
             Answer a few questions and discover your perfect hero match
           </p>
@@ -192,4 +190,4 @@ const IndexPage = () => {
 }
 
 export default IndexPage
-export const Head = () => <title>Superhero Search Engine</title>
+export const Head = () => <title>SuperSearcher</title>
