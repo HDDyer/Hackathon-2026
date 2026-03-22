@@ -17,9 +17,14 @@ export default function scoreCharacter(char, prefs) {
 
   for (const [flag, desired] of Object.entries(prefs.boolPreferences ?? {})) {
     const w = weightMap[flag] ?? 5;
+    if (desired === null || desired === undefined) continue;
+
     if (char[flag] === desired) {
       score += 20 * w;
+    } else {
+      score -= 20 * w; // ← THIS is what you're missing
     }
+
   }
 
   // Jitter: prevents ties from always resolving the same way

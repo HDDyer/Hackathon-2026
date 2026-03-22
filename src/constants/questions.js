@@ -1,4 +1,4 @@
-export default [
+const questions = [
   {
   id: "prefSpeed",
   prompt: "Should they be extremely fast?",
@@ -45,11 +45,22 @@ export default [
   ]
 },
 {
+  id: "prefVillainy",
+  prompt: "Do you want them to be villains?",
+  type: "radio",
+  options: [
+    { value: true, label: "Yes", updatePreferences: { boolPreferences: { isVillain: true } } },
+    { value: false, label: "No", updatePreferences: { boolPreferences: { isVillain: false }  } }
+  ]
+},
+{
   id: "prefEvilness",
   prompt: "Do you want them to lean toward being evil?",
   type: "radio",
   options: [
-    { value: true, label: "Yes", updatePreferences: { statPreferences: { evilness: 5 } } },
+    { value: true, label: "Yes", updatePreferences: { 
+        statPreferences: { evilness: 5 }
+      }},
     { value: false, label: "No", updatePreferences: { statPreferences: { evilness: -5 } } }
   ]
 },
@@ -135,3 +146,5 @@ export default [
   ]
 }
 ]
+
+export default questions;

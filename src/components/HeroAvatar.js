@@ -28,7 +28,7 @@ export default function HeroAvatar({ hero, size = 120 }) {
   const intelligence = clamp(Number(hero.intelligence || 0), 0, 100);
   const magic = clamp(Number(hero.magic || 0), 0, 100);
   const defense = clamp(Number(hero.defense || 0), 0, 100);
-  const evilness = clamp(Number(hero.evilness || 0), 0, 100);
+  // const evilness = clamp(Number(hero.evilness || 0), 0, 100);
 
   const totalPower = speed + strength + intelligence + magic + defense;
   let rarity = "R";
@@ -44,7 +44,7 @@ export default function HeroAvatar({ hero, size = 120 }) {
   const cx = size / 2;
   const cy = size / 2;
 
-  const glowOpacity = hero.isVillain ? 0.35 : 0.18;
+  // const glowOpacity = hero.isVillain ? 0.35 : 0.18;
   const gradientId = `bg-${hero.name.replace(/\s/g,"")}`;
   // Deterministic random generator based on hero name
   const seed = hero.name.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);

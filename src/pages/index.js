@@ -14,7 +14,6 @@ const IndexPage = () => {
   const [heroes, setHeroes] = useState([])
   const [filteredHeroes, setFilteredHeroes] = useState([])
   const [submitted, setSubmitted] = useState(false)
-  const [loading, setLoading] = useState(false)
   const [userPreferences, setUserPreferences] = useState(defaultCharacterPreferences)
 
   useEffect(() => {
@@ -45,7 +44,8 @@ const IndexPage = () => {
 
         if (prefs.boolPreferences) {
           for (const [k, v] of Object.entries(prefs.boolPreferences)) {
-            nextBool[k] = dir === 1 ? v : false
+            if (dir === 1) nextBool[k] = v;
+            else delete nextBool[k];  // ← remove the key entirely on undo
           }
         }
 
@@ -76,23 +76,24 @@ const IndexPage = () => {
   }
 
   const runScoring = () => {
-    const scored = heroes
+
+    let pool = [...heroes];
+
+    const { isVillain } = userPreferences.boolPreferences ?? {};
+    
+    const scored = pool
       .map(h => ({
         ...h,
         score: scoreCharacter(h, userPreferences),
       }))
-      .sort((a, b) => b.score - a.score)
+      .sort((a, b) => b.score - a.score);
 
-    setFilteredHeroes(scored)
-    setSubmitted(true)
+    setFilteredHeroes(scored);
+    setSubmitted(true);
   }
 
   const handleQuizComplete = () => {
-    setLoading(true)
-    setTimeout(() => {
-      runScoring()
-      setLoading(false)
-    }, 1200)
+    runScoring()
   }
 
   const resetQuiz = () => {
@@ -144,19 +145,13 @@ const IndexPage = () => {
           </p>
         </section>
 
-        {!submitted && !loading && (
+        {!submitted && (
           <Quiz
             questions={questions}
             answers={answers}
             onAnswerChange={handleAnswerChange}
             onComplete={handleQuizComplete}
           />
-        )}
-
-        {loading && (
-          <div className="loading">
-            🤖 Analyzing your personality...
-          </div>
         )}
 
         {submitted && (

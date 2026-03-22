@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, {useMemo, useState } from "react";
 import "../styles/index.css";
 
 const Quiz = ({
@@ -9,12 +9,6 @@ const Quiz = ({
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const question = questions?.[currentIndex];
-
-  const [localValue, setLocalValue] = useState(answers?.[question?.id] ?? "");
-
-  useEffect(() => {
-    setLocalValue(answers?.[question?.id] ?? "");
-  }, [question, answers]);
 
   const isLastQuestion = useMemo(
     () => currentIndex >= questions.length - 1,
@@ -73,30 +67,6 @@ const Quiz = ({
           ))}
         </div>
       )}
-
-      {/* 
-      // CURRENTLY NOT USED - we only have radio questions, but this is a framework for future question types
-      
-      {(question.type === "number" || question.type === "text") && (
-        <div className="quiz-input">
-          <input
-            type={question.type}
-            min={question.min}
-            max={question.max}
-            step={question.step}
-            placeholder={question.placeholder || "Enter value"}
-            value={localValue}
-            onChange={(e) => setLocalValue(e.target.value)}
-          />
-          <button
-            type="button"
-            disabled={localValue === "" || localValue === null}
-            onClick={() => handleAdvance(localValue, question.updatePreferences)}
-          >
-            {isLastQuestion ? "Finish Quiz" : "Next"}
-          </button>
-        </div>
-      )} */}
 
       {!question.type && (
         <p>Unsupported question type: {question.type}</p>

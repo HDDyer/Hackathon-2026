@@ -20,10 +20,10 @@ const normalizeHero = (raw) => (
   weakness:      raw.Weakness.trim(),
   height:        raw.Height.trim(),
   weight:        raw.Weight,
-  isVillain:     raw.isVillain  === "True",
-  isLiving:      raw.isLiving   === "True",
-  isEmployed:    raw.isEmployed === "True",
-  isHuman:       raw.isHuman    === "True",
+  isVillain:     raw.isVillain  === " True",
+  isLiving:      raw.isLiving   === " True",
+  isEmployed:    raw.isEmployed === " True",
+  isHuman:       raw.isHuman    === " True",
 })
 
 
