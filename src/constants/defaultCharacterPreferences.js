@@ -6,6 +6,7 @@
 /// randomness: how much to shuffle scores to prevent ties (0-1, higher = more random)
 export default {
   statPreferences: {
+    power:        1, // keep low 
     speed:        1, 
     intelligence:  1,  
     defense:       1,  

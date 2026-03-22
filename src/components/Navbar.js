@@ -10,7 +10,9 @@ export default function Navbar() {
                     <img src={logo} alt="Superhero Matchmaker Logo" className="logo-image" />
                 </a>
             </div>
+            <div className="nav-links">
+ 
+            </div>
         </nav>
     );
-
 }

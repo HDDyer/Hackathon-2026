@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-
+import "./Quiz.css"
 const Quiz = ({
   questions,
   answers,
@@ -40,10 +40,13 @@ const Quiz = ({
 
   return (
     <div className="quiz">
-      <div className="quiz-progress">
-        Question {currentIndex + 1} / {questions.length}
+
+      <div className="quiz-header">
+        <div className="quiz-progress">
+          Question {currentIndex + 1} / {questions.length}
+        </div>
+        <h2 className="quiz-prompt">{question.prompt}</h2>
       </div>
-      <h2>{question.prompt}</h2>
 
       {question.type === "radio" && (
         <div className="quiz-options">
@@ -60,6 +63,10 @@ const Quiz = ({
         </div>
       )}
 
+
+      {/* 
+      // CURRENTLY NOT USED - we only have radio questions, but this is a framework for future question types
+      
       {(question.type === "number" || question.type === "text") && (
         <div className="quiz-input">
           <input
@@ -79,7 +86,7 @@ const Quiz = ({
             {isLastQuestion ? "Finish Quiz" : "Next"}
           </button>
         </div>
-      )}
+      )} */}
 
       {!question.type && (
         <p>Unsupported question type: {question.type}</p>

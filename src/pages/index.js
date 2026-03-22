@@ -125,9 +125,9 @@ const IndexPage = () => {
   const leastPerfectHero = filteredHeroes.length > 0 ? filteredHeroes[filteredHeroes.length - 1] : null
 
   return (
+    <div className="container">
     <main className="page">
       <Navbar />
-      <h1 className="heading">Superhero Matchmaker</h1>
       {!submitted && (
         <Quiz
           questions={questions}
@@ -172,8 +172,15 @@ const IndexPage = () => {
                     <tr>
                       <th>Name</th>
                       <th>Power</th>
+                      <th>Strength</th>
+                      <th>Magic</th>
                       <th>Intelligence</th>
                       <th>Speed</th>
+                      <th>Defense</th>
+                      <th>Poison</th>
+                      <th>Rage</th>
+                      <th>Evilness</th>
+                      <th>Weakness</th>
                       <th>Score</th>
                       <th>Personality</th>
                     </tr>
@@ -183,8 +190,15 @@ const IndexPage = () => {
                       <tr key={i}>
                         <td>{hero.name}</td>
                         <td>{hero.power}</td>
+                        <td>{hero.strength}</td>
+                        <td>{hero.magic}</td>
                         <td>{hero.intelligence}</td>
                         <td>{hero.speed}</td>
+                        <td>{hero.defense}</td>
+                        <td>{hero.poison}</td>
+                        <td>{hero.rage}</td>
+                        <td>{hero.evilness}</td>
+                        <td>{hero.weakness}</td>
                         <td>{hero.score.toFixed(2)}</td>
                         <td>{hero.personality}</td>
                       </tr>
@@ -202,6 +216,7 @@ const IndexPage = () => {
         </div>
       )}
     </main>
+    </div>
   )
 }
 

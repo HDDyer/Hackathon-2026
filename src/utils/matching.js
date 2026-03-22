@@ -12,6 +12,7 @@ export default function scoreCharacter(char, prefs) {
 
   // Numeric stats we want HIGH
   for (const [stat, weight] of Object.entries(prefs.statPreferences ?? {})) {
+
     score += (char[stat] ?? 0) * weight;
   }
 

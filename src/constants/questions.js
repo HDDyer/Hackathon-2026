@@ -5,7 +5,7 @@ export default [
   type: "radio",
   options: [
     { value: true, label: "Yes", updatePreferences: { statPreferences: { speed: 5 } } },
-    { value: false, label: "No", updatePreferences: { statPreferences: { speed: 0 } } }
+    { value: false, label: "No", updatePreferences: { statPreferences: { speed: 0 } } },
   ]
 },
 {
