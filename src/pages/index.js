@@ -7,6 +7,7 @@ import "./index.css"
 import questions from "../constants/questions.js"
 import defaultCharacterPreferences from "../constants/defaultCharacterPreferences.js"
 import Quiz from "../components/Quiz.js"
+import Navbar from "../components/Navbar.js"
 
 const IndexPage = () => {
   const [heroes, setHeroes] = useState([])
@@ -125,6 +126,7 @@ const IndexPage = () => {
 
   return (
     <main className="page">
+      <Navbar />
       <h1 className="heading">Superhero Matchmaker</h1>
       {!submitted && (
         <Quiz

@@ -6,11 +6,11 @@
 /// randomness: how much to shuffle scores to prevent ties (0-1, higher = more random)
 export default {
   statPreferences: {
-    speed:        0, 
-    intelligence:  0,  
-    defense:       0,  
-    magic:         0,  
-    strength:      0,  
+    speed:        1, 
+    intelligence:  1,  
+    defense:       1,  
+    magic:         1,  
+    strength:      1,  
     evilness:  0, // the higher the number, the more evil they want 
     corrupted: 0, 
   },
@@ -19,5 +19,5 @@ export default {
     isLiving:  false, 
     isHuman:   false,
   },
-  randomness: 0.05,  // Small shuffle so close scores vary a bit
+  randomness: 0,  // Small shuffle so close scores vary a bit
 };

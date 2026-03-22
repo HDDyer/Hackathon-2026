@@ -1,4 +1,5 @@
-{
+export default [
+  {
   id: "prefSpeed",
   prompt: "Should they be extremely fast?",
   type: "radio",
@@ -133,3 +134,4 @@
     { value: false, label: "No", updatePreferences: { statPreferences: { evilness: 0, corrupted: 0 } } }
   ]
 }
+]
