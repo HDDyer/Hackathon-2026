@@ -11,7 +11,7 @@ export default function Navbar() {
                 </a>
             </div>
             <div className="nav-links">
- 
+
             </div>
         </nav>
     );

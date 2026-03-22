@@ -1,8 +1,8 @@
 {
-  "name": "my-gatsby-site",
+  "name": "supersearcher",
   "version": "1.0.0",
   "private": true,
-  "description": "my-gatsby-site",
+  "description": "A super hero search engine.",
   "author": "HDDyer",
   "keywords": [
     "gatsby"

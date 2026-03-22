@@ -1,39 +1,39 @@
 
 /// Scores a character based on user preferences. Higher score = better match.
 export default function scoreCharacter(char, prefs) {
-  const weightMap = {
-    isVillain:   7,
-    isLiving:    9,
-    isHuman:     5,
-    isEmployed:  3,
-  };
+    const weightMap = {
+        isVillain: 7,
+        isLiving: 9,
+        isHuman: 5,
+        isEmployed: 3,
+    };
 
-  let score = 0;
+    let score = 0;
 
-  for (const [stat, weight] of Object.entries(prefs.statPreferences ?? {})) {
-    // Multiply the character's stat by the user's weight for that stat
-    score += (char[stat] ?? 0) * weight;
-  }
-
-  for (const [flag, desired] of Object.entries(prefs.boolPreferences ?? {})) {
-    const w = weightMap[flag] ?? 5;
-    if (desired === null || desired === undefined) continue;
-
-    if (char[flag] === desired) {
-      score += 20 * w;
-    } else {
-      score -= 20 * w; // ← THIS is what you're missing
+    for (const [stat, weight] of Object.entries(prefs.statPreferences ?? {})) {
+        // Multiply the character's stat by the user's weight for that stat
+        score += (char[stat] ?? 0) * weight;
     }
 
-  }
+    for (const [flag, desired] of Object.entries(prefs.boolPreferences ?? {})) {
+        const w = weightMap[flag] ?? 5;
+        if (desired === null || desired === undefined) continue;
 
-  // Jitter: prevents ties from always resolving the same way
-  const maxPossible =
-    Object.values(prefs.statPreferences ?? {}).reduce((sum, w) => sum + 100 * w, 0) +
-    Object.keys(prefs.boolPreferences ?? {}).length * 100 * 9;
+        if (char[flag] === desired) {
+            score += 20 * w;
+        } else {
+            score -= 20 * w; // ← THIS is what you're missing
+        }
 
-  const jitterRange = maxPossible * (prefs.randomness ?? 0.1);
-  score += (Math.random() - 0.5) * jitterRange;
+    }
 
-  return score;
+    // Jitter: prevents ties from always resolving the same way
+    const maxPossible =
+        Object.values(prefs.statPreferences ?? {}).reduce((sum, w) => sum + 100 * w, 0) +
+        Object.keys(prefs.boolPreferences ?? {}).length * 100 * 9;
+
+    const jitterRange = maxPossible * (prefs.randomness ?? 0.1);
+    score += (Math.random() - 0.5) * jitterRange;
+
+    return score;
 }
