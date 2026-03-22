@@ -1,4 +1,5 @@
 import React from "react";
+import HeroAvatar from "./HeroAvatar";
 
 export default function HeroCard({ hero, title, highlight }) {
   if (!hero) return null;
@@ -10,7 +11,7 @@ export default function HeroCard({ hero, title, highlight }) {
   };
 
   return (
-    <div className={`hero-card fade-in ${highlight ? "highlight" : ""}`}>
+    <div className={`hero-card fade-in ${highlight ? "highlight" : ""}`} style={{ position: "relative" }}>
       {/* HEADER */}
       <div className="hero-header">
         <h3>{title}</h3>
@@ -23,12 +24,14 @@ export default function HeroCard({ hero, title, highlight }) {
       </div>
 
       {/* NAME */}
-      <h2 className="hero-name">{hero.name}</h2>
+      <h2 className="hero-name glow">{hero.name}</h2>
+
 
       {/* AVATAR */}
       <div className="hero-image">
-        <div className="hero-avatar">
-          {hero.name?.charAt(0)}
+        <HeroAvatar hero={hero} size={110} />
+        <div className="hero-ai-note">
+          🧠 Generated from personality & stats
         </div>
       </div>
 
@@ -55,15 +58,24 @@ export default function HeroCard({ hero, title, highlight }) {
 
       {/* TAGS */}
       <div className="hero-tags">
+        {!hero.isVillain && <span className="tag hero">🦸 Hero</span>}
         {hero.isHero && <span className="tag">🦸 Hero</span>}
         {hero.isVillain && <span className="tag villain">😈 Villain</span>}
         {hero.isHuman && <span className="tag">👤 Human</span>}
         {hero.isLiving && <span className="tag">❤️ Living</span>}
       </div>
 
+      {/* EXPLANATION */}
+      {hero.explanation && (
+        <div className="hero-explanation">
+          <strong>🧠 AI Match Explanation:</strong>
+          <p>{hero.explanation}</p>
+        </div>
+      )}
+
       {/* WEAKNESS */}
       <div className="hero-weakness">
-        <strong>Weakness:</strong>
+        <strong>⚠️ Weakness:</strong>
         <p>{hero.weakness}</p>
       </div>
     </div>
@@ -71,7 +83,8 @@ export default function HeroCard({ hero, title, highlight }) {
 }
 
 function Stat({ label, value = 0 }) {
-  const percent = Math.min(100, Number(value || 0) * 10);
+  const raw = Number(value || 0);
+  const percent = raw > 100 ? 100 : raw <= 10 ? raw * 10 : raw;
 
   return (
     <div className="stat">

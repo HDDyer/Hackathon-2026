@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import "./Quiz.css";
+import "../styles/index.css";
 
 const Quiz = ({
   questions,
@@ -40,16 +40,27 @@ const Quiz = ({
   }
 
   return (
-    <div className="quiz-container">
+    <div className="quiz-container fade-in">
       <div className="quiz-header">
         <div className="quiz-progress">
           Question {currentIndex + 1} / {questions.length}
         </div>
-        <h2 className="quiz-prompt">{question.prompt}</h2>
+
+        {/* PROGRESS BAR */}
+        <div className="progress-bar">
+          <div
+            className="progress-fill"
+            style={{ width: `${((currentIndex + 1) / questions.length) * 100}%` }}
+          />
+        </div>
+
+        <h2 className="quiz-prompt fade-slide">
+          {question.prompt}
+        </h2>
       </div>
 
       {question.type === "radio" && (
-        <div className="quiz-options">
+        <div className="quiz-options fade-slide">
           {question.options.map((opt) => (
             <button
               key={`${question.id}-${opt.value}`}

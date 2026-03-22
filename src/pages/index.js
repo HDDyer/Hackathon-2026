@@ -102,7 +102,34 @@ const IndexPage = () => {
     setSubmitted(false)
   }
 
-  const perfectHero = filteredHeroes[0]
+  // ===== NEW FEATURES =====
+
+  const getTopHeroes = () => filteredHeroes.slice(0, 3)
+
+  const getPersonalityType = () => {
+    const stats = userPreferences.statPreferences || {}
+
+    if (stats.intelligence > 4) return "🧠 Strategic Genius"
+    if (stats.strength > 4) return "💪 Power Fighter"
+    if (stats.speed > 4) return "⚡ Speedster"
+    if (stats.magic > 4) return "✨ Mystic User"
+    return "⚖️ Balanced Hero"
+  }
+
+  const getExplanation = (hero) => {
+    const prefs = userPreferences.statPreferences || {}
+
+    let reasons = []
+
+    if (prefs.speed > 3) reasons.push("high speed")
+    if (prefs.strength > 3) reasons.push("strong power")
+    if (prefs.intelligence > 3) reasons.push("high intelligence")
+    if (prefs.magic > 3) reasons.push("magical ability")
+
+    return `This hero matches your preference for ${reasons.join(", ")}.`
+  }
+
+  const topHeroes = getTopHeroes()
   const leastPerfectHero = filteredHeroes[filteredHeroes.length - 1]
 
   return (
@@ -134,9 +161,19 @@ const IndexPage = () => {
 
         {submitted && (
           <section className="results">
-            {perfectHero && (
-              <HeroCard hero={perfectHero} title="🌟 Perfect Hero" />
-            )}
+            <div className="personality">
+              Your Type: {getPersonalityType()}
+            </div>
+            <div className="top-heroes">
+              {topHeroes.map((hero, index) => (
+                <HeroCard
+                  key={index}
+                  hero={{ ...hero, explanation: getExplanation(hero) }}
+                  title={`#${index + 1} Match`}
+                  highlight={index === 0}
+                />
+              ))}
+            </div>
 
             {leastPerfectHero && (
               <HeroCard hero={leastPerfectHero} title="⚠️ Least Match" />
