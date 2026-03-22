@@ -82,6 +82,11 @@ const IndexPage = () => {
     const { isVillain } = userPreferences.boolPreferences ?? {};
     
     const scored = pool
+      .filter(h => {
+        if (isVillain === true) return h.isVillain === true;
+        if (isVillain === false) return h.isVillain === false;
+        return true; // if user doesn't care, include all
+      })
       .map(h => ({
         ...h,
         score: scoreCharacter(h, userPreferences),

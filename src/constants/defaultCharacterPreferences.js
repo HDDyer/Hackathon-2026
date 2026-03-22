@@ -6,12 +6,12 @@
 /// randomness: how much to shuffle scores to prevent ties (0-1, higher = more random)
 const defaultCharacterPreferences = {
   statPreferences: {
-    power:        0,  // was 1
-    speed:        0,  // was 1
-    intelligence: 0,  // was 1
-    defense:      0,  // was 1
-    magic:        0,  // was 1
-    strength:     0,  // was 1
+    power:        1,  // was 1
+    speed:        1,  // was 1
+    intelligence: 1,  // was 1
+    defense:      1,  // was 1
+    magic:        1,  // was 1
+    strength:     1,  // was 1
     evilness:     0,
     corrupted:    0,
   },
@@ -20,7 +20,7 @@ const defaultCharacterPreferences = {
     isLiving:    null,  // true = want living characters, false = want deceased, null = don't care
     isHuman:     null,  // true = want humans, false = want non-humans, null = don't care
   },
-  randomness: 0.05,  // Small shuffle so close scores vary a bit
+  randomness: 0,  // Small shuffle so close scores vary a bit
 };
 
 export default defaultCharacterPreferences;
