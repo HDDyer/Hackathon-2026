@@ -430,7 +430,7 @@ button {
   margin-bottom: 20px;
   padding: 12px;
   border-radius: 12px;
-  background: linear-gradient(135deg, #3b82f6, #22c55e);
+  background: #3b82f6; /* linear-gradient(135deg, #3b82f6, #22c55e); */
   font-weight: bold;
   text-align: center;
   color: white;
