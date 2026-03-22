@@ -15,10 +15,6 @@ export default {
     evilness:  0, // the higher the number, the more evil they want 
     corrupted: 0, 
   },
-  boolPreferences: {
-    isVillain: false,   
-    isLiving:  false, 
-    isHuman:   false,
-  },
+  boolPreferences: {},
   randomness: 0,  // Small shuffle so close scores vary a bit
 };

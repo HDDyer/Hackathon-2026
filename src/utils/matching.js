@@ -20,13 +20,13 @@ export default function scoreCharacter(char, prefs) {
   for (const [flag, desired] of Object.entries(prefs.boolPreferences ?? {})) {
     const w = weightMap[flag] ?? 5;
     if (char[flag] === desired) {
-      score += 100 * w;
+      score += 20 * w;
     }
   }
 
   // Jitter: prevents ties from always resolving the same way
   const maxPossible =
-    Object.values(prefs.statReferences ?? {}).reduce((sum, w) => sum + 100 * w, 0) +
+    Object.values(prefs.statPreferences ?? {}).reduce((sum, w) => sum + 100 * w, 0) +
     Object.keys(prefs.boolPreferences ?? {}).length * 100 * 9;
 
   const jitterRange = maxPossible * (prefs.randomness ?? 0.1);

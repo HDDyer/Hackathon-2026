@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
-import "./Quiz.css"
+import "./Quiz.css";
+
 const Quiz = ({
   questions,
   answers,
@@ -39,8 +40,7 @@ const Quiz = ({
   }
 
   return (
-    <div className="quiz">
-
+    <div className="quiz-container">
       <div className="quiz-header">
         <div className="quiz-progress">
           Question {currentIndex + 1} / {questions.length}
@@ -54,7 +54,7 @@ const Quiz = ({
             <button
               key={`${question.id}-${opt.value}`}
               type="button"
-              className={answers[question.id] === opt.value ? "selected" : ""}
+              className={`quiz-option ${answers[question.id] === opt.value ? "selected" : ""}`}
               onClick={() => handleAdvance(opt.value, opt.updatePreferences)}
             >
               {opt.label}
@@ -62,7 +62,6 @@ const Quiz = ({
           ))}
         </div>
       )}
-
 
       {/* 
       // CURRENTLY NOT USED - we only have radio questions, but this is a framework for future question types
@@ -91,8 +90,7 @@ const Quiz = ({
       {!question.type && (
         <p>Unsupported question type: {question.type}</p>
       )}
-
-        </div>
+    </div>
   );
 };
 
