@@ -10,13 +10,11 @@ export default function scoreCharacter(char, prefs) {
 
   let score = 0;
 
-  // Numeric stats we want HIGH
   for (const [stat, weight] of Object.entries(prefs.statPreferences ?? {})) {
-
+    // Multiply the character's stat by the user's weight for that stat
     score += (char[stat] ?? 0) * weight;
   }
 
-  // Boolean flags we want to match
   for (const [flag, desired] of Object.entries(prefs.boolPreferences ?? {})) {
     const w = weightMap[flag] ?? 5;
     if (char[flag] === desired) {

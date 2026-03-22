@@ -30,9 +30,6 @@ export default function HeroCard({ hero, title, highlight }) {
       {/* AVATAR */}
       <div className="hero-image">
         <HeroAvatar hero={hero} size={110} />
-        <div className="hero-ai-note">
-          🧠 Generated from personality & stats
-        </div>
       </div>
 
       {/* STATS */}
@@ -50,9 +47,9 @@ export default function HeroCard({ hero, title, highlight }) {
         <Info label="Power" value={hero.power} />
         <Info label="Personality" value={hero.personality} />
         <Info label="Hometown" value={hero.hometown} />
-        <Info label="Age" value={hero.age} />
+        <Info label="Age" value={hero.age.toFixed(0)} />
         <Info label="Height" value={hero.height} />
-        <Info label="Weight" value={hero.weight} />
+        <Info label="Weight" value={hero.weight.toFixed(0)} />
         <Info label="Favorite Color" value={hero.favoriteColor} />
       </div>
 
@@ -68,14 +65,14 @@ export default function HeroCard({ hero, title, highlight }) {
       {/* EXPLANATION */}
       {hero.explanation && (
         <div className="hero-explanation">
-          <strong>🧠 AI Match Explanation:</strong>
+          <strong> Match Explanation:</strong>
           <p>{hero.explanation}</p>
         </div>
       )}
 
       {/* WEAKNESS */}
       <div className="hero-weakness">
-        <strong>⚠️ Weakness:</strong>
+        <strong>Weakness:</strong>
         <p>{hero.weakness}</p>
       </div>
     </div>

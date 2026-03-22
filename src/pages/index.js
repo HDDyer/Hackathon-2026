@@ -52,7 +52,7 @@ const IndexPage = () => {
         if (prefs.statPreferences) {
           for (const [k, v] of Object.entries(prefs.statPreferences)) {
             const val = (nextStat[k] ?? 0) + dir * Number(v)
-            nextStat[k] = Math.max(0, Math.min(10, val))
+            nextStat[k] = Math.max(-10, Math.min(10, val))
           }
         }
       }

@@ -50,7 +50,7 @@ export default [
   type: "radio",
   options: [
     { value: true, label: "Yes", updatePreferences: { statPreferences: { evilness: 5 } } },
-    { value: false, label: "No", updatePreferences: { statPreferences: { evilness: 0 } } }
+    { value: false, label: "No", updatePreferences: { statPreferences: { evilness: -5 } } }
   ]
 },
 {
@@ -59,7 +59,7 @@ export default [
   type: "radio",
   options: [
     { value: true, label: "Yes", updatePreferences: { statPreferences: { corrupted: 5 } } },
-    { value: false, label: "No", updatePreferences: { statPreferences: { corrupted: 0 } } }
+    { value: false, label: "No", updatePreferences: { statPreferences: { corrupted: -5 } } }
   ]
 },
 {
@@ -131,7 +131,7 @@ export default [
   type: "radio",
   options: [
     { value: true, label: "Yes", updatePreferences: { statPreferences: { evilness: 4, corrupted: 4 } } },
-    { value: false, label: "No", updatePreferences: { statPreferences: { evilness: 0, corrupted: 0 } } }
+    { value: false, label: "No", updatePreferences: { statPreferences: { evilness: -5, corrupted: -5 } } }
   ]
 }
 ]
