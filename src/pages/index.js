@@ -4,136 +4,119 @@ import { parseCSVtoJSON } from "../utils/csvParser.js"
 import scoreCharacter from "../utils/matching.js"
 import "./index.css"
 
-
-/// User preferences with dynamic clamping for stat preferences
-///
-/// statPreferences: weights for how important each stat is (higher = more important) (0-10)
-/// boolPreferences: which boolean flags the user wants to match (e.g. isVillain: true)
-/// penalties: stats where lower is better (e.g. evilness, corruption)
-/// randomness: how much to shuffle scores to prevent ties (0-1, higher = more random)
-const userPreferences = {
-  statPreferences: new Proxy({
-    speed:        7, 
-    intelligence:  10,  
-    defense:       5,  
-    magic:         3,  
-    strength:      1,  
-  }, {
-    // Automatically handles situations where the value of a stat is set outside the 0-10 range
-    set(target, prop, value) {
-      target[prop] = value > 10 ? 10 : (value < 0 ? 0 : value);
-      return true;
-    }
-  }),
-  boolPreferences: {
-    isVillain: true,   
-    isLiving:  false, 
-    isHuman:   false,
-  },
-  penalties: {
-    evilness:  1,  // Penalise high evilness heavily
-    corrupted: 1,  // Some corruption is okay but not a lot
-  },
-  randomness: 0.05,  // Small shuffle so close scores vary a bit
-};
-
-
-const questions = [
-  {
-    id: "isVillain",
-    prompt: "Do you want a hero or a villain?",
-    type: "radio",
-    options: [
-      { value: false, label: "Hero" },
-      { value: true, label: "Villain" }
-    ]
-  },
-  {
-    id: "isHuman",
-    prompt: "Should the character be human?",
-    type: "radio",
-    options: [
-      { value: true, label: "Yes" },
-      { value: false, label: "No" }
-    ]
-  },
-  {
-    id: "minPower",
-    prompt: "Minimum Power level (0-100)",
-    type: "number",
-    min: 0,
-    max: 100,
-    step: 1,
-    defaultValue: 0
-  },
-  {
-    id: "minIntelligence",
-    prompt: "Minimum Intelligence (0-100)",
-    type: "number",
-    min: 0,
-    max: 100,
-    step: 1,
-    defaultValue: 0
-  },
-  {
-    id: "personality",
-    prompt: "Preferred Personality (optional)",
-    type: "select",
-    options: []
-  },
-  {
-    id: "minSpeed",
-    prompt: "Minimum Speed (0-100)",
-    type: "number",
-    min: 0,
-    max: 100,
-    step: 1,
-    defaultValue: 0
-  }
-]
-
+import questions from "../constants/questions.js"
+import defaultCharacterPreferences from "../constants/defaultCharacterPreferences.js"
+import Quiz from "../components/Quiz.js"
 
 const IndexPage = () => {
   const [heroes, setHeroes] = useState([])
-  const [answers, setAnswers] = useState({})
   const [filteredHeroes, setFilteredHeroes] = useState([])
   const [submitted, setSubmitted] = useState(false)
-  const [personalityOptions, setPersonalityOptions] = useState([])
+  const [userPreferences, setUserPreferences] = useState(defaultCharacterPreferences)
+
+ // const [personalityOptions, setPersonalityOptions] = useState([])
 
   useEffect(() => {
     parseCSVtoJSON().then(data => {
       setHeroes(data);
-      const personalities = [...new Set(data.map(h => h.personality).filter(Boolean))];
-      setPersonalityOptions(personalities.sort());
+      // const personalities = [...new Set(data.map(h => h.personality).filter(Boolean))];
+      // setPersonalityOptions(personalities.sort());
     }).catch(err => console.error("Error loading CSV:", err));
   }, [])
 
-  const handleAnswerChange = (questionId, value) => {
-    setAnswers(prev => ({ ...prev, [questionId]: value }))
+  const [answers, setAnswers] = useState({})
+
+  const handleAnswerChange = (questionId, value, updatePreferences = {}) => {
+    const previousSelection = answers[questionId]
+    const isDeselect = previousSelection === value
+
+    setAnswers(prev => {
+      const nextAnswers = { ...prev }
+
+      if (isDeselect) {
+        delete nextAnswers[questionId]
+      } else {
+        nextAnswers[questionId] = value
+      }
+
+      return nextAnswers
+    })
+
+    setUserPreferences(prev => {
+      const nextBoolPreferences = { ...(prev.boolPreferences ?? {}) }
+      const nextStatPreferences = { ...(prev.statPreferences ?? {}) }
+      const nextPenalties = { ...(prev.penalties ?? {}) }
+
+      const testOutsideBounds = (num) => (num < 0 ? 0 : num > 10 ? 10 : num)
+
+      const applyPreferences = (prefs, direction = 1) => {
+        if (!prefs) return
+
+        if (prefs.boolPreferences) {
+          for (const [flag, newValue] of Object.entries(prefs.boolPreferences)) {
+            nextBoolPreferences[flag] = direction === 1 ? newValue : false
+          }
+        }
+
+        if (prefs.statPreferences) {
+          for (const [stat, delta] of Object.entries(prefs.statPreferences)) {
+            const candidate = (nextStatPreferences[stat] ?? 0) + direction * Number(delta)
+            nextStatPreferences[stat] = testOutsideBounds(candidate)
+          }
+        }
+
+        if (prefs.penalties) {
+          for (const [stat, delta] of Object.entries(prefs.penalties)) {
+            const candidate = (nextPenalties[stat] ?? 0) + direction * Number(delta)
+            nextPenalties[stat] = candidate
+          }
+        }
+      }
+
+      const prevQuestion = questions.find(q => q.id === questionId)
+      const prevOption = prevQuestion?.options?.find(opt => opt.value === previousSelection)
+
+      if (isDeselect && prevOption?.updatePreferences) {
+        applyPreferences(prevOption.updatePreferences, -1)
+      } else {
+        if (prevOption?.updatePreferences) {
+          applyPreferences(prevOption.updatePreferences, -1)
+        }
+        applyPreferences(updatePreferences, 1)
+      }
+
+      return {
+        ...prev,
+        boolPreferences: nextBoolPreferences,
+        statPreferences: nextStatPreferences,
+        penalties: nextPenalties,
+      }
+    })
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
+  const runScoring = () => {
+    console.log("User Preferences on Submit:", userPreferences)
 
-    const userQuery = {
-      wantsVillain:    answers.isVillain        ?? null,
-      wantsHuman:      answers.isHuman          ?? null,
-      minPower:        answers.minPower         ?? 0,
-      minIntelligence: answers.minIntelligence  ?? 0,
-      minSpeed:        answers.minSpeed         ?? 0,
-      personality:     answers.personality      || null,
-    }
-
-    console.log("User query:", JSON.stringify(userQuery, null, 2))
-
-    // Score the filtered heroes using the new algorithm
-    const scoredHeroes = heroes.map(hero => ({
-      ...hero,
-      score: scoreCharacter(hero, userPreferences)
-    })).sort((a, b) => b.score - a.score)
+    const scoredHeroes = heroes
+      .map((hero) => ({
+        ...hero,
+        score: scoreCharacter(hero, userPreferences),
+      }))
+      .sort((a, b) => b.score - a.score)
 
     setFilteredHeroes(scoredHeroes)
     setSubmitted(true)
+  }
+
+  const handleQuizComplete = () => {
+    runScoring()
+  }
+
+  const resetQuiz = () => {
+    setAnswers({})
+    setUserPreferences(defaultCharacterPreferences)
+    setFilteredHeroes([])
+    setSubmitted(false)
   }
 
   const perfectHero = filteredHeroes.length > 0 ? filteredHeroes[0] : null
@@ -143,58 +126,14 @@ const IndexPage = () => {
   return (
     <main className="page">
       <h1 className="heading">Superhero Matchmaker</h1>
-      <form onSubmit={handleSubmit}>
-        {questions.map((q, idx) => (
-          <div key={idx} className="question">
-            <h2>{q.prompt}</h2>
-            {q.type === "radio" && (
-              <div>
-                {q.options.map(opt => (
-                  <label key={opt.label} style={{ marginRight: "1rem" }}>
-                    <input
-                      type="radio"
-                      name={q.id}
-                      value={opt.value}
-                      checked={answers[q.id] === opt.value}
-                      onChange={() => handleAnswerChange(q.id, opt.value)}
-                    />
-                    {opt.label}
-                  </label>
-                ))}
-              </div>
-            )}
-            {q.type === "number" && (
-              <input
-                type="number"
-                min={q.min}
-                max={q.max}
-                step={q.step}
-                defaultValue={q.defaultValue}
-                onChange={(e) => handleAnswerChange(q.id, e.target.valueAsNumber)}
-              />
-            )}
-            {q.type === "select" && (
-              <select
-                onChange={(e) => handleAnswerChange(q.id, e.target.value)}
-                defaultValue=""
-              >
-                <option value="">-- Any --</option>
-                {personalityOptions.map(opt => (
-                  <option key={opt} value={opt}>{opt}</option>
-                ))}
-              </select>
-            )}
-            {q.type === "text" && (
-              <input
-                type="text"
-                placeholder={q.placeholder}
-                onChange={(e) => handleAnswerChange(q.id, e.target.value)}
-              />
-            )}
-          </div>
-        ))}
-        <button type="submit">Find My Hero</button>
-      </form>
+      {!submitted && (
+        <Quiz
+          questions={questions}
+          answers={answers}
+          onAnswerChange={handleAnswerChange}
+          onComplete={handleQuizComplete}
+        />
+      )}
 
       {submitted && (
         <div className="results">
@@ -207,6 +146,9 @@ const IndexPage = () => {
                 <h3>🌟 Perfect Hero (Highest Score)</h3>
                 <p><strong>Name:</strong>        {perfectHero.name}</p>
                 <p><strong>Power:</strong>       {perfectHero.power}</p>
+                <p><strong>Intelligence:</strong> {perfectHero.intelligence}</p>
+                <p><strong>Speed:</strong>       {perfectHero.speed}</p>
+                <p><strong>Strength:</strong>    {perfectHero.strength}</p>
                 <p><strong>Score:</strong>       {perfectHero.score.toFixed(2)}</p>
                 <p><strong>Personality:</strong> {perfectHero.personality}</p>
                 <p><strong>Hometown:</strong>    {perfectHero.hometown}</p>
@@ -248,6 +190,11 @@ const IndexPage = () => {
                   </tbody>
                 </table>
               </details>
+              <div style={{ marginTop: "1rem" }}>
+                <button type="button" onClick={resetQuiz}>
+                  Start Over
+                </button>
+              </div>
             </>
           )}
         </div>

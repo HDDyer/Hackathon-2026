@@ -23,11 +23,6 @@ export default function scoreCharacter(char, prefs) {
     }
   }
 
-  // Numeric stats we want LOW (penalise high values)
-  for (const [stat, weight] of Object.entries(prefs.penalties ?? {})) {
-    score -= (char[stat] ?? 0) * weight;
-  }
-
   // Jitter: prevents ties from always resolving the same way
   const maxPossible =
     Object.values(prefs.statReferences ?? {}).reduce((sum, w) => sum + 100 * w, 0) +
@@ -36,6 +31,5 @@ export default function scoreCharacter(char, prefs) {
   const jitterRange = maxPossible * (prefs.randomness ?? 0.1);
   score += (Math.random() - 0.5) * jitterRange;
 
-  console.log(`Final score for ${char.name}:`, score);
   return score;
 }
