@@ -1,19 +1,24 @@
 # Hackathon 2026
 
-## How to run the project
+## Overview
 
-1. Clone the repository:
+This project is a gatsby react app that generates a superhero character based on the user's answers to a set of quiz questions. The app uses a CSV file of all of the superhero characters and their stats, then applies a scoring algorithm in order to rank the users best matches. It is deployed on Netlify and can be accessed at https://serene-cheesecake-18f9f2.netlify.app/.
 
-   ```bash
-    git clone https://github.com/HDDyer/Hackathon-2026
-    cd Hackathon-2026
-    ```
-2. Ensure that you have Anaconda installed on your system. If not, you can download it from [here](https://www.anaconda.com/products/distribution) (you do not need a account to download Anaconda, find the small link "Skip Registration" on the download page).
+## Getting Started
+Ensure that you have Node.js and npm installed on your machine. You can download them from [Node.js official website](https://nodejs.org/).
 
-3. Set up the backend environment:
-    ```bash
-     cd backend
-     conda env create -f environment.yml
-     conda activate backend
-     python app.py
-     ```
+To get started, clone the repository and install the dependencies:
+
+```bash
+git clone https://github.com/HDDyer/Hackathon-2026
+cd Hackathon-2026
+npm install
+```
+
+Then, start the development server:
+
+```bash
+npm run develop
+```
+
+This will start the app at `http://localhost:8000`. You can then take the quiz and see your best superhero match!
